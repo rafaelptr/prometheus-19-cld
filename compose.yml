@@ -50,12 +50,3 @@ services:
       - '/var/lib/docker:/var/lib/docker'
     networks:
       - prometheus
-    
-  engine-proxy:
-    image: basi/socat
-    deploy:
-      mode: global
-    ports:
-      - 4998:4999
-    networks:
-      - prometheus
