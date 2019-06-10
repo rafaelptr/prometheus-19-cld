@@ -51,6 +51,21 @@ resource "aws_instance" "managers" {
     destination = "/tmp/script-init-swarm.sh"
   }
 
+  provisioner "file" {
+    source      = "../compose.yml"
+    destination = "/tmp/compose.yml"
+  }
+
+  provisioner "file" {
+    source      = "../Dockerfile"
+    destination = "/tmp/Dockerfile"
+  }
+
+  provisioner "file" {
+    source      = "../prometheus.yml"
+    destination = "/tmp/prometheus.yml"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/script.sh",
@@ -79,7 +94,7 @@ resource "aws_instance" "workers" {
   instance_type = "t2.micro"
   ami           = "${lookup(var.aws_amis, var.aws_region)}"
 
-  count = 1
+  count = 4
 
   subnet_id              = "${random_shuffle.random_subnet.result[0]}"
   vpc_security_group_ids = ["${aws_security_group.allow-internal-swarm.id}"]
@@ -113,6 +128,6 @@ resource "aws_instance" "workers" {
   }
 
   depends_on = [
-      "aws_instance.managers"
-    ]
+    "aws_instance.managers",
+  ]
 }
